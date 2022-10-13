@@ -38,7 +38,27 @@ describe("Testing the productsService", function () {
   it("Should test the insertProduct", async function () {
     sinon.stub(productsModel, "insertProduct").resolves(42);
 
-    const result = await productsService.insertProduct({ name: 'test'});
+    const result = await productsService.insertProduct({ name: 'testing'});
     expect(result).to.be.deep.equal({ type: null, message: 42 });
+  });
+
+  it("Should test the insertProduct when the error happens - NAME_IS_REQUIRED", async function () {
+    sinon.stub(productsModel, "insertProduct").resolves(undefined);
+
+    const result = await productsService.insertProduct({});
+    expect(result).to.be.deep.equal({
+      type: "NAME_IS_REQUIRED",
+      message: '"name" is required',
+    });
+  });
+  
+  it("Should test the insertProduct when the error happens - NAME_IS_TOO_SHORT", async function () {
+    sinon.stub(productsModel, "insertProduct").resolves(undefined);
+
+    const result = await productsService.insertProduct({ name: "a" });
+    expect(result).to.be.deep.equal({
+      type: "NAME_IS_TOO_SHORT",
+      message: '"name" length must be at least 5 characters long',
+    });
   });
 });

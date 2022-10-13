@@ -69,7 +69,7 @@ describe("Testing the productsController", function () {
     const req = {};
     const res = {};
 
-    req.body = { name: 'test' };
+    req.body = { name: 'testing' };
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns();
 
@@ -80,6 +80,27 @@ describe("Testing the productsController", function () {
     await productsController.addProduct(req, res);
 
     expect(res.status).to.have.been.calledWith(201);
-    expect(res.json).to.have.been.calledWith({ id: 4, name: 'test' });
+    expect(res.json).to.have.been.calledWith({ id: 4, name: 'testing' });
+  });
+
+  it("Should test the addProduct when the error happens - NAME_IS_REQUIRED", async () => {
+    const req = {};
+    const res = {};
+
+    req.body = {};
+    res.status = sinon.stub().returns(res);
+    res.json = sinon.stub().returns();
+
+    sinon.stub(productsService, "insertProduct").resolves({
+      type: "NAME_IS_REQUIRED",
+      message: '"name" is required',
+    });
+
+    await productsController.addProduct(req, res);
+
+    expect(res.status).to.have.been.calledWith(400);
+    expect(res.json).to.have.been.calledWith({
+      message: '"name" is required',
+    });
   });
 });
