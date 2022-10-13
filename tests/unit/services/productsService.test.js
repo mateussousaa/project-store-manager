@@ -34,4 +34,11 @@ describe("Testing the productsService", function () {
     const result = await productsService.getProductById(7);
     expect(result).to.be.deep.equal({ type: "PRODUCT_NOT_FOUND",  message: "Product not found" });
   });
+
+  it("Should test the insertProduct", async function () {
+    sinon.stub(productsModel, "insertProduct").resolves(42);
+
+    const result = await productsService.insertProduct({ name: 'test'});
+    expect(result).to.be.deep.equal({ type: null, message: 42 });
+  });
 });

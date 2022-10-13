@@ -25,4 +25,13 @@ describe('Testing the productsModel', function () {
     const result = await productsModel.getProductById(1);
     expect(result).to.be.deep.equal(products[0]);
   });
+
+  it("Should test the insertProduct", async function () {
+    sinon
+      .stub(connection, "execute")
+      .resolves([{ insertId: 42 }]);
+
+    const result = await productsModel.insertProduct({ name: 'test' });
+    expect(result).to.be.deep.equal(42);
+  });
 });

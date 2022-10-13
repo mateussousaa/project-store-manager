@@ -46,22 +46,40 @@ describe("Testing the productsController", function () {
     expect(res.json).to.have.been.calledWith(products[0]);
   });
 
-    it("Should test the listProductById when the error happens - PRODUCT_NOT_FOUND", async () => {
-      const req = {};
-      const res = {};
+  it("Should test the listProductById when the error happens - PRODUCT_NOT_FOUND", async () => {
+    const req = {};
+    const res = {};
 
-      req.params = { id: "99999" };
-      res.status = sinon.stub().returns(res);
-      res.json = sinon.stub().returns();
+    req.params = { id: "99999" };
+    res.status = sinon.stub().returns(res);
+    res.json = sinon.stub().returns();
 
-      sinon.stub(productsService, "getProductById")
-        .resolves({ type: "PRODUCT_NOT_FOUND", message: "Product not found" });
+    sinon.stub(productsService, "getProductById")
+      .resolves({ type: "PRODUCT_NOT_FOUND", message: "Product not found" });
 
-      await productsController.listProductById(req, res);
+    await productsController.listProductById(req, res);
 
-      expect(res.status).to.have.been.calledWith(404);
-      expect(res.json).to.have.been.calledWith({
-        message: "Product not found",
-      });
+    expect(res.status).to.have.been.calledWith(404);
+    expect(res.json).to.have.been.calledWith({
+      message: "Product not found",
     });
+  });
+  
+  it("Should test the addProduct", async () => {
+    const req = {};
+    const res = {};
+
+    req.body = { name: 'test' };
+    res.status = sinon.stub().returns(res);
+    res.json = sinon.stub().returns();
+
+    sinon
+      .stub(productsService, "insertProduct")
+      .resolves({ type: null , message: 4 });
+
+    await productsController.addProduct(req, res);
+
+    expect(res.status).to.have.been.calledWith(201);
+    expect(res.json).to.have.been.calledWith({ id: 4, name: 'test' });
+  });
 });
