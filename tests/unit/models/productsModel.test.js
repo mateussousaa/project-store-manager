@@ -3,23 +3,26 @@ const sinon = require('sinon');
 
 const connection = require('../../../src/models/connection');
 const { productsModel } = require('../../../src/models/');
+const { products } = require('../mocks/productsMock');
 
-const allProductsResponse = require('./mocks/productsMock');
-
-describe('Testing the productModel', function () {
+describe('Testing the productsModel', function () {
   afterEach(() => {
     sinon.restore();
   });
   
-  it('Should test the getAllProducts', async () => {
-    sinon.stub(connection, "execute").resolves([allProductsResponse]);
+  it('Should test the getProducts', async () => {
+    sinon.stub(connection, "execute")
+      .resolves([products]);
+    
     const result = await productsModel.getProducts();
-    expect(result).to.be.deep.equal(allProductsResponse);
+    expect(result).to.be.deep.equal(products);
   });
 
-  it('Should test the getProductsById', async function () {
-    sinon.stub(connection, "execute").resolves([[{ id: 1, name: "Martelo de Thor" }]]);
-    const result = await productsModel.getProductsById(1);
-    expect(result).to.be.deep.equal(allProductsResponse[0]);
+  it('Should test the getProductById', async function () {
+    sinon.stub(connection, "execute")
+      .resolves([[{ id: 1, name: "Martelo de Thor" }]]);
+    
+    const result = await productsModel.getProductById(1);
+    expect(result).to.be.deep.equal(products[0]);
   });
 });
