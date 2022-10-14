@@ -12,20 +12,15 @@ const getProductById = async (id) => {
 };
 
 const insertProduct = async (product) => {
-  if (!product.name) {
-    return {
-      type: 'NAME_IS_REQUIRED', message: '"name" is required',
-    };
-  }
-  
-  if (product.name.length < 5) {
-    return {
-      type: 'NAME_IS_TOO_SHORT', message: '"name" length must be at least 5 characters long',
-    };
-  }
-
   const insertId = await productsModel.insertProduct(product);
   return { type: null, message: insertId };
 };
 
-module.exports = { getProducts, getProductById, insertProduct };
+const updateProduct = async (product) => {
+  const findedProduct = await productsModel.getProductById(product.id);
+  if (!findedProduct) return { type: 'PRODUCT_NOT_FOUND', message: 'Product not found' };
+  await productsModel.updateProduct(product);
+  return { type: null, message: product };
+};
+
+module.exports = { getProducts, getProductById, insertProduct, updateProduct };

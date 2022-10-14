@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 
 const connection = require('../../../src/models/connection');
-const { productsModel } = require('../../../src/models/');
+const { productsModel } = require('../../../src/models');
 const { products } = require('../mocks/productsMock');
 
 describe('Testing the productsModel', function () {
@@ -33,5 +33,14 @@ describe('Testing the productsModel', function () {
 
     const result = await productsModel.insertProduct({ name: 'test' });
     expect(result).to.be.deep.equal(42);
+  });
+
+  it("Should test the updateProduct", async function () {
+    sinon
+      .stub(connection, "execute")
+      .resolves([{ affectedRows: 1 }]);
+
+    const affectedRows = await productsModel.updateProduct({ name: "test", id: '1' });
+    expect(affectedRows).to.be.equal(1);
   });
 });

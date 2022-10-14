@@ -83,24 +83,22 @@ describe("Testing the productsController", function () {
     expect(res.json).to.have.been.calledWith({ id: 4, name: 'testing' });
   });
 
-  it("Should test the addProduct when the error happens - NAME_IS_REQUIRED", async () => {
+  it("Should test the addProduct", async () => {
     const req = {};
     const res = {};
 
-    req.body = {};
+    req.body = { name: "testing" };
+    req.params = { id: '1' };
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns();
 
-    sinon.stub(productsService, "insertProduct").resolves({
-      type: "NAME_IS_REQUIRED",
-      message: '"name" is required',
-    });
+    sinon
+      .stub(productsService, "updateProduct")
+      .resolves({ type: null, message: { id: 1, name: 'testing' } });
 
-    await productsController.addProduct(req, res);
+    await productsController.updateProduct(req, res);
 
-    expect(res.status).to.have.been.calledWith(400);
-    expect(res.json).to.have.been.calledWith({
-      message: '"name" is required',
-    });
+    expect(res.status).to.have.been.calledWith(200);
+    expect(res.json).to.have.been.calledWith({ id: 1, name: "testing" });
   });
 });

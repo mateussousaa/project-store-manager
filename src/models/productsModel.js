@@ -14,20 +14,29 @@ const getProductById = async (id) => {
   return result;
 };
 
-const insertProduct = async (products) => {
-  const columns = Object.keys(products)
+const insertProduct = async (product) => {
+  const columns = Object.keys(product)
     .map((key) => `${key}`)
     .join(', ');
   
-  const placeholders = Object.values(products)
+  const placeholders = Object.values(product)
     .map((_key) => '?')
     .join(', ');
 
   const [{ insertId }] = await connection.execute(
     `INSERT INTO StoreManager.products (${columns}) VALUES (${placeholders})`,
-    [...Object.values(products)],
+    [...Object.values(product)],
   );
   return insertId;
 };
 
-module.exports = { getProducts, getProductById, insertProduct };
+const updateProduct = async (product) => {
+  const { name, id } = product;
+  const [{ affectedRows }] = await connection.execute(
+    'UPDATE StoreManager.products SET name = ? WHERE id = ?',
+    [name, id],
+  );
+  return affectedRows;
+};
+
+module.exports = { getProducts, getProductById, insertProduct, updateProduct };
