@@ -54,4 +54,13 @@ describe("Testing the productsService", function () {
       message: { id: 2, name: "testing" },
     });
   });
+  it("Should test the updateProduct", async function () {
+    sinon.stub(productsModel, "deleteProduct").resolves(1);
+
+    const result = await productsService.deleteProduct(2);
+    expect(result).to.be.deep.equal({
+      type: null,
+      message: 2 ,
+    });
+  });
 });

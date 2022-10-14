@@ -101,4 +101,21 @@ describe("Testing the productsController", function () {
     expect(res.status).to.have.been.calledWith(200);
     expect(res.json).to.have.been.calledWith({ id: 1, name: "testing" });
   });
+  it("Should test the deleteProduct", async () => {
+    const req = {};
+    const res = {};
+
+    req.params = { id: "1" };
+    res.status = sinon.stub().returns(res);
+    res.json = sinon.stub().returns();
+
+    sinon
+      .stub(productsService, "deleteProduct")
+      .resolves({ type: null, message: 1  });
+
+    await productsController.deleteProduct(req, res);
+
+    expect(res.status).to.have.been.calledWith(204);
+    expect(res.json).to.have.been.calledWith({});
+  });
 });
