@@ -45,9 +45,9 @@ describe('Testing the productsModel', function () {
   });
 
   it("Should test the deleteProduct", async function () {
-    sinon.stub(connection, "execute").resolves([{ affectedRows: 1 }]);
+    sinon.stub(connection, "execute").resolves([{ affectedRows: 2 }]);
 
-    const affectedRows = await productsModel.deleteProduct(2);
-    expect(affectedRows).to.be.equal(1);
+    const affectedRows = await productsModel.deleteProduct(1);
+    expect(affectedRows).to.be.equal(2);
   });
 });

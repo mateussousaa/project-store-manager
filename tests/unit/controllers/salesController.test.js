@@ -45,4 +45,22 @@ describe("Testing the salesController", function () {
     expect(res.status).to.have.been.calledWith(200);
     expect(res.json).to.have.been.calledWith([sales[0], sales[1]]);
   });
+
+  it("Should test the deleteSale", async () => {
+    const req = {};
+    const res = {};
+
+    req.params = { id: "1" };
+    res.status = sinon.stub().returns(res);
+    res.json = sinon.stub().returns();
+
+    sinon
+      .stub(salesService, "deleteSale")
+      .resolves({ type: null, message: 1 });
+
+    await salesController.deleteSale(req, res);
+
+    expect(res.status).to.have.been.calledWith(204);
+    expect(res.json).to.have.been.calledWith();
+  });
 });

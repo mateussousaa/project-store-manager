@@ -14,4 +14,13 @@ const getSaleById = async (id) => {
   return { type: null, message: sale.map((s) => camelize(s)) };
 };
 
-module.exports = { getSales, getSaleById };
+const deleteSale = async (id) => {
+  const findedSale = await salesModel.getSaleById(id);
+  if (!findedSale.length) {
+    return { type: 'SALE_NOT_FOUND', message: 'Sale not found' };
+  }
+  await salesModel.deleteSale(id);
+  return { type: null, message: id };
+};
+
+module.exports = { getSales, getSaleById, deleteSale };

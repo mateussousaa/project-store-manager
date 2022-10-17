@@ -34,4 +34,11 @@ describe("Testing the salesService", function () {
       message: "Sale not found",
     });
   });
+
+  it("Should test the deleteSale", async function () {
+    sinon.stub(salesModel, "deleteSale").resolves(2);
+
+    const result = await salesService.deleteSale(1);
+    expect(result).to.be.deep.equal({ type: null, message: 1 });
+  });
 });

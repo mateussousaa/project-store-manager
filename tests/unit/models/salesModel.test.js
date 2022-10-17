@@ -25,4 +25,11 @@ describe('Testing the salesModel', function () {
     const result = await salesModel.getSaleById(2);
     expect(result).to.be.deep.equal(sale);
   });
+
+  it("Should test the deleteSale", async () => {
+    sinon.stub(connection, "execute").resolves([{ affectedRows: 1 }]);
+
+    const result = await salesModel.deleteSale(1);
+    expect(result).to.be.deep.equal(1);
+  });
 });
