@@ -14,6 +14,15 @@ const getProductById = async (id) => {
   return result;
 };
 
+const getProductByTerm = async (term) => {
+  const [result] = await connection.execute(
+    `SELECT * FROM StoreManager.products
+    WHERE name LIKE ?`,
+    [`%${term}%`],
+  );
+  return result;
+};
+
 const insertProduct = async (product) => {
   const columns = Object.keys(product)
     .map((key) => `${key}`)
@@ -47,4 +56,11 @@ const deleteProduct = async (id) => {
   return affectedRows;
 };
 
-module.exports = { getProducts, getProductById, insertProduct, updateProduct, deleteProduct };
+module.exports = {
+  getProducts,
+  getProductById,
+  getProductByTerm,
+  insertProduct,
+  updateProduct,
+  deleteProduct,
+};

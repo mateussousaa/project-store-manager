@@ -11,6 +11,11 @@ const getProductById = async (id) => {
   return { type: null, message: product };
 };
 
+const getProductByTerm = async (q) => {
+  const products = await productsModel.getProductByTerm(q);
+  return { type: null, message: products };
+};
+
 const insertProduct = async (product) => {
   const insertId = await productsModel.insertProduct(product);
   return { type: null, message: insertId };
@@ -30,4 +35,11 @@ const deleteProduct = async (id) => {
   return { type: null, message: id };
 };
 
-module.exports = { getProducts, getProductById, insertProduct, updateProduct, deleteProduct };
+module.exports = {
+  getProducts,
+  getProductById,
+  getProductByTerm,
+  insertProduct,
+  updateProduct,
+  deleteProduct,
+};

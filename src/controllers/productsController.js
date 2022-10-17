@@ -12,6 +12,12 @@ const listProductById = async (request, response) => {
   response.status(200).json(message);
 };
 
+const listProductByTerm = async (request, response) => {
+  const { q } = request.query;
+  const { message } = await productsService.getProductByTerm(q);
+  response.status(200).json(message);
+};
+
 const addProduct = async (request, response) => {
   const { name } = request.body;
   const { message } = await productsService.insertProduct({ name });
@@ -34,4 +40,11 @@ const deleteProduct = async (request, response) => {
   response.status(204).json({});
 };
 
-module.exports = { listProducts, listProductById, addProduct, updateProduct, deleteProduct };
+module.exports = {
+  listProducts,
+  listProductById,
+  listProductByTerm, 
+  addProduct,
+  updateProduct,
+  deleteProduct,
+};
