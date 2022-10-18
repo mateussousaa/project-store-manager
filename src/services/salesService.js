@@ -1,6 +1,7 @@
 const camelize = require('camelize');
 const snakeize = require('snakeize');
-const { salesModel, productsModel } = require('../models');
+const { salesModel } = require('../models');
+const validateProducts = require('./validations/productsValidation');
 
 const getSales = async () => {
   const sales = await salesModel.getSales();
@@ -16,22 +17,37 @@ const getSaleById = async (id) => {
 };
 
 const insertSale = async (products) => {
-  const getProducts = products
-    .map((p) => productsModel.getProductById(p.productId));
-  const productsResponse = await Promise.all(getProducts);
-
-  const productsValidation = productsResponse.every((p) => p !== undefined);
-  
+  const productsValidation = await validateProducts(products);
   if (!productsValidation) return { type: 'PRODUCT_NOT_FOUND', message: 'Product not found' };
 
   const id = await salesModel.createSale();
   const promises = products.map((s) => salesModel.fillSale(snakeize({ saleId: id, ...s })));
+
   await Promise.all(promises);
   return {
     type: null,
     message: {
       id,
       itemsSold: [...products],
+    },
+  };
+};
+
+const updateSale = async (products, id) => {
+  const sale = await salesModel.getSaleById(id);
+  if (!sale.length) return { type: 'SALE_NOT_FOUND', message: 'Sale not found' };
+
+  const productsValidation = await validateProducts(products);
+  if (!productsValidation) { return { type: 'PRODUCT_NOT_FOUND', message: 'Product not found' }; }
+  
+  const promises = products.map((s) =>
+    salesModel.updateSale(snakeize({ id, ...s })));
+  await Promise.all(promises);
+  return {
+    type: null,
+    message: {
+      saleId: id,
+      itemsUpdated: [...products],
     },
   };
 };
@@ -45,4 +61,4 @@ const deleteSale = async (id) => {
   return { type: null, message: id };
 };
 
-module.exports = { getSales, getSaleById, insertSale, deleteSale };
+module.exports = { getSales, getSaleById, insertSale, updateSale, deleteSale };
