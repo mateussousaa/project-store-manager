@@ -25,6 +25,29 @@ const getSaleById = async (id) => {
   return result;
 };
 
+const createSale = async () => {
+  const [{ insertId }] = await connection.execute(
+    'INSERT INTO StoreManager.sales () VALUES ()',
+  );
+  return insertId;
+};
+
+const fillSale = async (sale) => {
+  const columns = Object.keys(sale)
+    .map((key) => `${key}`)
+    .join(', ');
+
+  const placeholders = Object.values(sale)
+    .map((_key) => '?')
+    .join(', ');
+
+  const [{ affectedRows }] = await connection.execute(
+    `INSERT INTO StoreManager.sales_products (${columns}) VALUES (${placeholders})`,
+    [...Object.values(sale)],
+  );
+  return affectedRows;
+};
+
 const deleteSale = async (id) => {
   const [{ affectedRows }] = await connection.execute(
     'DELETE FROM StoreManager.sales WHERE id = ?',
@@ -33,4 +56,4 @@ const deleteSale = async (id) => {
   return affectedRows;
 };
 
-module.exports = { getSales, getSaleById, deleteSale };
+module.exports = { getSales, getSaleById, createSale, fillSale, deleteSale };

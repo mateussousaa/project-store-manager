@@ -1,5 +1,6 @@
 const camelize = require('camelize');
-const { salesModel } = require('../models');
+const snakeize = require('snakeize');
+const { salesModel, productsModel } = require('../models');
 
 const getSales = async () => {
   const sales = await salesModel.getSales();
@@ -14,6 +15,27 @@ const getSaleById = async (id) => {
   return { type: null, message: sale.map((s) => camelize(s)) };
 };
 
+const insertSale = async (products) => {
+  const getProducts = products
+    .map((p) => productsModel.getProductById(p.productId));
+  const productsResponse = await Promise.all(getProducts);
+
+  const productsValidation = productsResponse.every((p) => p !== undefined);
+  
+  if (!productsValidation) return { type: 'PRODUCT_NOT_FOUND', message: 'Product not found' };
+
+  const id = await salesModel.createSale();
+  const promises = products.map((s) => salesModel.fillSale(snakeize({ saleId: id, ...s })));
+  await Promise.all(promises);
+  return {
+    type: null,
+    message: {
+      id,
+      itemsSold: [...products],
+    },
+  };
+};
+
 const deleteSale = async (id) => {
   const findedSale = await salesModel.getSaleById(id);
   if (!findedSale.length) {
@@ -23,4 +45,4 @@ const deleteSale = async (id) => {
   return { type: null, message: id };
 };
 
-module.exports = { getSales, getSaleById, deleteSale };
+module.exports = { getSales, getSaleById, insertSale, deleteSale };
